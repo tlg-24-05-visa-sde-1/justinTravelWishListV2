@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (listArray.length > 0) {
       listTitle.innerHTML = `<h2>My Wish List</h2>`;
     } else {
-      listTitle.innerHTML = `<h2>Enter Destination Details</>`;
+      listTitle.innerHTML = `<h2>Enter Destination Details</h2>`;
     }
   }
 
@@ -114,11 +114,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       editedCard.innerHTML = `
         <div class="card">
-          <img src="${editedPhotoUrl}" class="card-img-top img-fluid" alt="a picture of ${editedPhotoUrl} in ${editedLocation}" />
+          <img src="${editedPhotoUrl}" class="card-img-top img-fluid" alt="a picture of ${editedDestination} in ${editedLocation}" />
           <div class="card-body">
             <h4 class="card-title">${editedDestination}</h4>
-            <h5> class="card-title">${editedLocatin}</h5>
-            <p>${editedLocation}</p>
+            <h5 class="card-title">${editedLocation}</h5>
+            <p${editedLocation}</p>
             <p class="card-text">${editedDescription}</p>
             <div class="container d-flex buttonDiv">
               <button class="btn btn-warning editButton">Edit</button>
