@@ -8,6 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let ul = document.getElementById("cardList");
   let listTitle = document.getElementById("listTitle");
 
+  // shared part of endpoint for unsplash used in submit event handler and edit.
+  let baseUrl = "https://api.unsplash.com/photos/random?";
+  let client_id = "client_id=M4TnnwO352fWXw7OpNg9YSQSfr1KX_tBcsS3q2PZapg";
+  let count = "&count=1";
+
   function setListTitle() {
     if (listArray.length > 0) {
       listTitle.innerHTML = `<h2>My Wish List</h2>`;
@@ -26,28 +31,47 @@ document.addEventListener("DOMContentLoaded", () => {
       item.photoUrl,
       item.description
     );
-    ul.prepend(card);
+    ul.append(card);
   });
 
   // Form submit event listener to add new cards
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-
     let destination = document.getElementById("destination").value.trim();
     let location = document.getElementById("location").value.trim();
-    let photoUrl =
-      document.getElementById("photoUrl").value.trim() ||
-      "https://cavchronicle.org/wp-content/uploads/2018/03/top-travel-destination-for-visas-900x504.jpg";
+    let photoUrl;
     let description = document.getElementById("description").value.trim();
+    getPhoto();
+    //function for getting photo from unsplash api
+    function getPhoto() {
+      let query = `&query=${destination}`;
+      let endpoint = `${baseUrl}${client_id}${count}${query}`;
 
-    let newCard = { destination, location, photoUrl, description };
-    listArray.push(newCard);
-    localStorage.setItem("destinations", JSON.stringify(listArray));
+      fetch(endpoint)
+        .then((response) => {
+          if (response.ok) {
+            console.log(response);
+            return response.json();
+          }
+          alert("No photos found for location! Please enter a new location");
+          throw Error(`Response status: ${response.status}`);
+        })
+        .then((data) => {
+          console.log(data);
+          photoUrl = data[0].urls.regular;
+          console.log(photoUrl);
+          let newCard = { destination, location, photoUrl, description };
+          listArray.push(newCard);
+          localStorage.setItem("destinations", JSON.stringify(listArray));
 
-    let card = createCard(destination, location, photoUrl, description);
-    ul.prepend(card);
-    setListTitle();
-    form.reset();
+          let card = createCard(destination, location, photoUrl, description);
+          //ul.insertBefore(card, ul.firstChild);
+          ul.appendChild(card);
+          setListTitle();
+          form.reset();
+        })
+        .catch((error) => console.error("Error fetching photo", error));
+    }
   });
 
   // Function to create a new card element
@@ -99,20 +123,30 @@ document.addEventListener("DOMContentLoaded", () => {
       let newDestination = prompt("Enter new name", editedDestination);
       if (newDestination !== null && newDestination !== "") {
         editedDestination = newDestination;
-      }
-      let newLocation = prompt("Enter new location", editedLocation);
-      if (newLocation !== null && newLocation !== "") {
-        editedLocation = newLocation;
-      }
-      let newPhotoUrl = prompt("Enter new photo url", editedPhotoUrl);
-      if (newPhotoUrl !== null && newPhotoUrl !== "") {
-        editedPhotoUrl = newPhotoUrl;
-      }
-      let newDescription = prompt("Enter new description", editedDescription);
-      if (newDescription !== null && newDescription !== "") {
-        editedDescription = newDescription;
-      }
-      editedCard.innerHTML = `
+
+        let query = `&query=${editedDestination}`;
+        let endpoint = `${baseUrl}${client_id}${count}${query}`;
+        fetch(endpoint)
+          .then((response) => {
+            if (response.ok) return response.json();
+            throw Error(`Response error: ${response.status}`);
+          })
+          .then((data) => {
+            editedPhotoUrl = data[0].urls.regular;
+            let newLocation = prompt("Enter new location", editedLocation);
+            if (newLocation !== null && newLocation !== "") {
+              editedLocation = newLocation;
+            }
+
+            let newDescription = prompt(
+              "Enter new description",
+              editedDescription
+            );
+            if (newDescription !== null && newDescription !== "") {
+              editedDescription = newDescription;
+            }
+
+            editedCard.innerHTML = `
         <div class="card">
           <img src="${editedPhotoUrl}" class="card-img-top img-fluid" alt="a picture of ${editedDestination} in ${editedLocation}" />
           <div class="card-body">
@@ -128,13 +162,15 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
 
-      listArray[cardIndex] = {
-        destination: editedDestination,
-        location: editedLocation,
-        photoUrl: editedPhotoUrl,
-        description: editedDescription,
-      };
-      localStorage.setItem("destinations", JSON.stringify(listArray));
+            listArray[cardIndex] = {
+              destination: editedDestination,
+              location: editedLocation,
+              photoUrl: editedPhotoUrl,
+              description: editedDescription,
+            };
+            localStorage.setItem("destinations", JSON.stringify(listArray));
+          });
+      }
     }
   });
 });
