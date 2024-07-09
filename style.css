@@ -16,9 +16,9 @@ form {
   min-width: 250px;
 }
 
-.listSection {
+/* .listSection {
   justify-content: center;
-}
+} */
 
 #cardList {
   list-style-type: none;
