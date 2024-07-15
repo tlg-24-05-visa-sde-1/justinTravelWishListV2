@@ -1,5 +1,5 @@
 export default function weather() {
-  let baseUrl = "https://api.openweathermap.org/data/2.5/forecast?";
+  let baseUrl = "https://api.openweathermap.org/data/2.5/weather?";
   let lat;
   let long;
   let api_key = "3b0d5f297753bea3ead25f1cca442bac";
@@ -21,18 +21,18 @@ export default function weather() {
         throw Error("Error fetching data: ", response.status);
       })
       .then((data) => {
-        //${data.list[0].main.temp}
+        //${data.list.main.temp}
         console.log(data);
         let temperature = (
-          (data.list[0].main.temp - 273.15) * (9 / 5) +
+          (data.main.temp - 273.15) * (9 / 5) +
           32
         ).toPrecision(2);
         weatherDiv.innerHTML = `
         <div>
-              <h3>Current weather in ${data.city.name}</h3>
+              <h3>Current weather in ${data.name}:</h3>
 
-             <p>${data.list[0].weather[0].description} </p>
-              <h5>Temperature</h5>
+             <p>${data.weather[0].description} </p>
+              <h5>Temperature:</h5>
               <p>${temperature} degrees Fahrenheit</p>
 
             </div>

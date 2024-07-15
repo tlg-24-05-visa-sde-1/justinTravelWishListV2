@@ -14,12 +14,20 @@ let listArray = JSON.parse(localStorage.getItem("destinations")) || [];
 let ul = document.getElementById("cardList");
 let listTitle = document.getElementById("listTitle");
 
+let imagesToLoad = document.querySelectorAll("img[data-src]");
+function loadImage(image) {
+  image.setAttribute("src", image.getAttribute("data-src"));
+  image.onload = () => {
+    image.removeAttribute("data-src");
+  };
+}
+
 function createCard(destination, location, photoUrl, description) {
   let card = document.createElement("li");
   card.classList.add("col-sm");
   card.innerHTML = `
       <div class="card">
-        <img src="${photoUrl}" class="card-img-top img-fluid" alt="a picture of ${destination} in ${location}">
+        <img src="./resources/gray.png" data-src="${photoUrl}" class="card-img-top img-fluid" alt="a picture of ${destination} in ${location}">
         <div class="card-body">
           <h4 class="card-title">${destination}</h4>
           <h5 class="card-title">${location}</h5>
@@ -31,7 +39,9 @@ function createCard(destination, location, photoUrl, description) {
         </div>
       </div>
     `;
-
+  ul.appendChild(card);
+  let newImage = card.querySelector("img");
+  loadImage(newImage);
   return card;
 }
 
@@ -57,7 +67,10 @@ document.addEventListener("DOMContentLoaded", () => {
       item.photoUrl,
       item.description
     );
-    ul.append(card);
+
+    document.querySelector("ul").appendChild(card);
+    let image = card.querySelector("img");
+    loadImage(image);
   });
 
   getPhoto;
