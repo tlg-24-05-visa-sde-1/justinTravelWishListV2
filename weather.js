@@ -6,11 +6,20 @@ export default function weather() {
   let endpoint;
   let weatherDiv = document.getElementById("weatherDiv");
   navigator.geolocation.getCurrentPosition((position) => {
-    console.log(position.coords.latitude);
     lat = position.coords.latitude;
     long = position.coords.longitude;
     endpoint = baseUrl + "lat=" + lat + "&lon=" + long + "&appid=" + api_key;
 
+    let map = L.map("map", {
+      center: [lat, long],
+      zoom: 12,
+    });
+
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
     fetch(endpoint, {
       method: "GET",
     })

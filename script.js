@@ -2,6 +2,7 @@ import getPhoto from "./getCard.js";
 import deleteCard from "./deleteCard.js";
 import editCard from "./editCard.js";
 import weather from "./weather.js";
+
 // shared part of endpoint for unsplash used in submit event handler and edit.
 let baseUrl = "https://api.unsplash.com/photos/random?";
 let client_id = "client_id=M4TnnwO352fWXw7OpNg9YSQSfr1KX_tBcsS3q2PZapg";

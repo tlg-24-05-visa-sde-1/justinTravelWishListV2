@@ -66,3 +66,7 @@ h2 {
 #weatherDiv {
   margin-top: 50px;
 }
+
+#map {
+  height: 50vh;
+}
